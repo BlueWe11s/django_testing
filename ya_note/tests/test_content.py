@@ -94,7 +94,7 @@
 #         sorted_timestamps = sorted(all_timestamps)
 #         # Проверяем, что временные метки отсортированы правильно.
 #         self.assertEqual(all_timestamps, sorted_timestamps)
-        
+
 #     def test_authorized_client_has_form(self):
 #         # Авторизуем клиент при помощи ранее созданного пользователя.
 #         self.client.force_login(self.author)

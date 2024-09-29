@@ -17,27 +17,34 @@ class TestRoutes(TestCase):
         cls.author = User.objects.create(username='Лев Толстой')
         cls.reader = User.objects.create(username='Читатель простой')
         cls.notes = Note.objects.create(title='Заголовок',
-                                        text='Текст', slug='slug')
-        # От имени одного пользователя создаём комментарий к новости:
-        # cls.comment = Comment.objects.create(
-        #     news=cls.notes,
-        #     author=cls.author,
-        #     text='Текст комментария'
-        # )
+                                        text='Текст', slug='slug',
+                                        author=cls.author)
 
     def test_pages_availability(self):
         urls = (
             ('notes:home', None),
-            # ('notes:detail', (self.notes.slug,)),
             ('users:login', None),
             ('users:logout', None),
-            ('users:signup', None)
+            ('users:signup', None),
         )
+
         for name, args in urls:
             with self.subTest(name=name):
                 url = reverse(name, args=args)
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_pages_not_availability(self):
+        urls = (('notes:detail', (self.notes.slug,)),
+                ('notes:delete', (self.notes.slug)),
+                ('notes:edit', (self.notes.slug)),
+                ('notes:add, None'))
+
+        for name, args in urls:
+            with self.subTest(name=name):
+                url = reverse(name, args=args)
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 404)
 
     # def test_redirect_for_anonymous_client(self):
     #     login_url = reverse('users:login')
