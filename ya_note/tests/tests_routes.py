@@ -20,7 +20,7 @@ class TestRoutes(TestCase):
                                         text='Текст', slug='s',
                                         author=cls.author)
 
-    def test_pages_availability(self):
+    def test_availability_pages(self):
         urls = (
             ('notes:home', None),
             ('users:login', None),
@@ -34,7 +34,7 @@ class TestRoutes(TestCase):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
-    def test_availability_for_notes_detail_edit_and_delete(self):
+    def test_availability_notes_detail_edit_delete(self):
         users_statuses = (
             (self.author, HTTPStatus.OK),
             (self.reader, HTTPStatus.NOT_FOUND),
@@ -50,7 +50,7 @@ class TestRoutes(TestCase):
                     response = self.client.get(url)
                     self.assertEqual(response.status_code, status)
 
-    def test_redirect_for_anonymous_client(self):
+    def test_redirect_anonymous_client(self):
         login_url = reverse('users:login')
         urls = (('notes:list', None),
                 ('notes:delete', (self.notes.slug)),
