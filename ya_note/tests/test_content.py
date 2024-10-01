@@ -24,7 +24,7 @@ class TestContent(TestCase):
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
 
-    def test_notes_list_for_auth_user(self):
+    def test_notes_list(self):
         url = reverse('notes:list')
         response = self.author_client.get(url)
         notes = response.context['object_list']
