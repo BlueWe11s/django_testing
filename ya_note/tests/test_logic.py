@@ -1,5 +1,3 @@
-from http import HTTPStatus
-
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -22,8 +20,9 @@ class TestNoteCreation(TestCase):
         cls.form_data = {'text': 'Текст заметки', 'title': 'Текст заголовка',
                          'slug': 's', 'author': cls.auth_client}
 
-    def test_user_can_create_note(self):
-        response = self.auth_client.post(reverse('notes:add'), data=self.form_data)
+    def test_user_availability_create_note(self):
+        response = self.auth_client.post(reverse('notes:add'),
+                                         data=self.form_data)
         self.assertRedirects(response, reverse('notes:success'))
         note_count = Note.objects.count()
         self.assertEqual(note_count, self.notes_counts + 1)
@@ -33,12 +32,12 @@ class TestNoteCreation(TestCase):
         self.assertEqual(note.text, 'Текст заметки')
         self.assertEqual(note.author, self.user)
 
-    def test_anonymous_user_cant_create_note(self):
+    def test_anonymous_user_no_availability_create_note(self):
         self.client.post(reverse('notes:add'), data=self.form_data)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, self.notes_counts)
 
-    def test_empty_slug(self):
+    def test_no_slug(self):
         self.form_data.pop('slug')
         response = self.auth_client.post(reverse('notes:add'),
                                          data=self.form_data)
@@ -80,25 +79,25 @@ class TestNoteEditDelete(TestCase):
                              errors=(self.note.slug + WARNING))
         self.assertEqual(Note.objects.count(), self.notes_counts + 1)
 
-    def test_author_can_edit_note(self):
+    def test_author_availability_edit_note(self):
         response = self.author_client.post(self.edit_url, data=self.form_data)
         self.assertRedirects(response, reverse('notes:success'))
         self.note.refresh_from_db()
         self.assertEqual(self.note.text, 'Обновлённая заметка')
 
-    def test_author_can_delete_note(self):
+    def test_author_availability_delete_note(self):
         response = self.author_client.delete(self.delete_url)
         self.assertRedirects(response, reverse('notes:success'))
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, self.notes_counts)
 
-    def test_another_user_cant_edit_note_of_another_user(self):
+    def test_another_user_no_availability_edit_note_of_another_user(self):
         response = self.reader_client.post(self.edit_url, data=self.form_data)
         self.assertEqual(response.status_code, 404)
         self.note.refresh_from_db()
         self.assertEqual(self.note.text, 'Текст заметки')
 
-    def test_another_user_cant_delete_note_of_another_user(self):
+    def test_another_user_no_availability_delete_note_of_another_user(self):
         response = self.reader_client.delete(self.delete_url)
         self.assertEqual(response.status_code, 404)
         notes_count = Note.objects.count()
