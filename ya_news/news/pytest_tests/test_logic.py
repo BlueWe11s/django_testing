@@ -23,7 +23,7 @@ class TestCommentCreation(TestCase):
         # Адрес страницы с новостью.
         cls.url = reverse('news:detail', args=(cls.news.id,))
         # Создаём пользователя и клиент, логинимся в клиенте.
-        cls.user = User.objects.create(username='Мимо Крокодил')
+        cls.user = User.objects.create(username='Читатель Простой')
         cls.auth_client = Client()
         cls.auth_client.force_login(cls.user)
         # Данные для POST-запроса при создании комментария.
@@ -90,13 +90,13 @@ class TestCommentEditDelete(TestCase):
         cls.url_to_comments = news_url + '#comments'
         # Адрес блока с комментариями.
         # Создаём пользователя - автора комментария.
-        cls.author = User.objects.create(username='Автор комментария')
+        cls.author = User.objects.create(username='Лев Толстой')
         # Создаём клиент для пользователя-автора.
         cls.author_client = Client()
         # "Логиним" пользователя в клиенте.
         cls.author_client.force_login(cls.author)
         # Делаем всё то же самое для пользователя-читателя.
-        cls.reader = User.objects.create(username='Читатель')
+        cls.reader = User.objects.create(username='Читатель Простой')
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
         # Создаём объект комментария.
