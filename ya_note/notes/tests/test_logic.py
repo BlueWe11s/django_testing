@@ -23,10 +23,10 @@ class TestNoteCreation(TestCase):
     def test_user_availability_create_note(self):
         response = self.auth_client.post(reverse('notes:add'),
                                          data=self.form_data)
-        self.assertRedirects(response, reverse('notes:success'))
         note_count = Note.objects.count()
-        self.assertEqual(note_count, self.notes_counts + 1)
         note = Note.objects.last()
+        self.assertRedirects(response, reverse('notes:success'))
+        self.assertEqual(note_count, self.notes_counts + 1)
         self.assertEqual(note.title, 'Текст заголовка')
         self.assertEqual(note.slug, 's')
         self.assertEqual(note.text, 'Текст заметки')
@@ -41,10 +41,10 @@ class TestNoteCreation(TestCase):
         self.form_data.pop('slug')
         response = self.auth_client.post(reverse('notes:add'),
                                          data=self.form_data)
-        self.assertRedirects(response, reverse('notes:success'))
-        self.assertEqual(Note.objects.count(), self.notes_counts + 1)
         new_note = Note.objects.get()
         expected_slug = slugify(self.form_data['title'])
+        self.assertRedirects(response, reverse('notes:success'))
+        self.assertEqual(Note.objects.count(), self.notes_counts + 1)
         self.assertEqual(new_note.slug, expected_slug)
 
 
@@ -81,24 +81,24 @@ class TestNoteEditDelete(TestCase):
 
     def test_author_availability_edit_note(self):
         response = self.author_client.post(self.edit_url, data=self.form_data)
-        self.assertRedirects(response, reverse('notes:success'))
         self.note.refresh_from_db()
+        self.assertRedirects(response, reverse('notes:success'))
         self.assertEqual(self.note.text, 'Обновлённая заметка')
 
     def test_author_availability_delete_note(self):
         response = self.author_client.delete(self.delete_url)
-        self.assertRedirects(response, reverse('notes:success'))
         notes_count = Note.objects.count()
+        self.assertRedirects(response, reverse('notes:success'))
         self.assertEqual(notes_count, self.notes_counts)
 
     def test_another_user_no_availability_edit_note_of_another_user(self):
         response = self.reader_client.post(self.edit_url, data=self.form_data)
-        self.assertEqual(response.status_code, 404)
         self.note.refresh_from_db()
+        self.assertEqual(response.status_code, 404)
         self.assertEqual(self.note.text, 'Текст заметки')
 
     def test_another_user_no_availability_delete_note_of_another_user(self):
         response = self.reader_client.delete(self.delete_url)
-        self.assertEqual(response.status_code, 404)
         notes_count = Note.objects.count()
+        self.assertEqual(response.status_code, 404)
         self.assertEqual(notes_count, self.notes_counts + 1)
