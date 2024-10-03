@@ -1,27 +1,35 @@
 from datetime import timedelta
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
 from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
+from pytest_lazyfixture import lazy_fixture
 
 from news.models import Comment, News
 
-ANONYMOUS = lazy_fixture('client')
-AUTHOR = lazy_fixture('author_client')
-READER = lazy_fixture('reader_client')
-
+ADMIN_CLIENT = lazy_fixture('admin_client')
+AUTHOR_CLIENT = lazy_fixture('author_client')
+CLIENT = lazy_fixture('client')
+NEWS_DETAIL = lazy_fixture('news')
+NEWS_DETAIL_URL = 'news:detail'
+NEWS_HOME_URL = 'news:home'
 TITLE = 'Заголовок'
 TEXT = 'Текст'
 NEW_TEXT = 'Новый текст'
 
 
+@pytest.fixture(autouse=True)
+def add_db_for_all_tests(db):
+    pass
+
+
 @pytest.fixture
 def author(django_user_model):
     return django_user_model.objects.create(
-        username='Кайл Брафловски',
-        password='jussword')
+        username='Лев Толстой',
+        password='CrimeAndPunishment'
+    )
 
 
 @pytest.fixture
@@ -33,8 +41,9 @@ def author_client(author, client):
 @pytest.fixture
 def reader(django_user_model):
     return django_user_model.objects.create(
-        username='Эрик Картман',
-        password='fassword')
+        username='Читатель Простой',
+        password='KareninaGoodBook?'
+    )
 
 
 @pytest.fixture
@@ -44,7 +53,7 @@ def reader_client(reader, client):
 
 
 @pytest.fixture
-def news(author):
+def new(author):
     news = News.objects.create(
         title=TITLE,
         text=TEXT,
@@ -64,21 +73,21 @@ def bulk_news_creation(author):
 
 
 @pytest.fixture
-def comment(author, news):
+def comment(author, new):
     comment = Comment.objects.create(
         author=author,
-        news=news,
+        news=new,
         text=TEXT
     )
     return comment
 
 
 @pytest.fixture
-def multiple_comments(author, news):
-    for index in range(3):
+def multiply_comments(author, new):
+    for index in range(5):
         comment = Comment.objects.create(
             author=author,
-            news=news,
+            news=new,
             text=f'{TEXT} {index}',
         )
         comment.created = timezone.now() + timedelta(days=index)
@@ -96,8 +105,8 @@ def home_url():
 
 
 @pytest.fixture
-def detail_url(news):
-    return reverse('news:detail', args=(news.id,))
+def detail_url(new):
+    return reverse('news:detail', args=(new.id,))
 
 
 @pytest.fixture

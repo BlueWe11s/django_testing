@@ -1,14 +1,8 @@
+import pytest
 from django.conf import settings
 from django.urls import reverse
 
-import pytest
-from pytest_lazyfixture import lazy_fixture
-
-
-AUTHOR_CLIENT = lazy_fixture('author_client')
-CLIENT = lazy_fixture('client')
-NEWS_DETAIL_URL = 'news:detail'
-NEWS_HOME_URL = 'news:home'
+from .conftest import AUTHOR_CLIENT, CLIENT, NEWS_DETAIL_URL, NEWS_HOME_URL
 
 
 @pytest.mark.django_db
