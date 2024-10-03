@@ -31,10 +31,10 @@ def test_news_order(client):
 def test_comments_order(client, news):
     url = reverse(NEWS_DETAIL_URL, args=(news.id,))
     response = client.get(url)
-    assert 'news' in response.context
     news = response.context['news']
     all_dates = [comment.created for comment in news.comment_set.all()]
     sorted_dates = sorted(all_dates)
+    assert 'news' in response.context
     assert sorted_dates == all_dates
 
 
