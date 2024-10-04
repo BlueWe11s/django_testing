@@ -75,8 +75,8 @@ def test_author_can_edit_comment(
     comment
 ):
     response = author_client.post(edit_comment_url, data=new_comment)
-    assertRedirects(response, f'{detail_url}#comments')
     comment.refresh_from_db()
+    assertRedirects(response, f'{detail_url}#comments')
     assert comment.text == NEW_TEXT
 
 

@@ -24,7 +24,7 @@ from .conftest import ADMIN_CLIENT, AUTHOR_CLIENT, CLIENT
         (lazy_fixture('edit_comment_url'), ADMIN_CLIENT, HTTPStatus.NOT_FOUND),
     )
 )
-def test_pages_availability_for_anonymous_user(url, current_client, status):
+def test_pages_availability(url, current_client, status):
     response = current_client.get(url)
     assert response.status_code == status
 
