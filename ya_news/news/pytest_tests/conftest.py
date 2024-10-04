@@ -11,9 +11,9 @@ from news.models import Comment, News
 ADMIN_CLIENT = lazy_fixture('admin_client')
 AUTHOR_CLIENT = lazy_fixture('author_client')
 CLIENT = lazy_fixture('client')
-NEWS_DETAIL = lazy_fixture('news')
-NEWS_DETAIL_URL = 'news:detail'
-NEWS_HOME_URL = 'news:home'
+NEWS = lazy_fixture('news')
+NEWS_DETAIL = 'news:detail'
+NEWS_HOME = 'news:home'
 TITLE = 'Заголовок'
 TEXT = 'Текст'
 NEW_TEXT = 'Новый текст'
