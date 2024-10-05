@@ -7,6 +7,7 @@ from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
+from .conftest import Test
 
 User = get_user_model()
 
@@ -56,7 +57,7 @@ class TestNoteEditDelete(TestCase):
     def setUpTestData(cls):
         cls.notes_counts = Note.objects.count()
         cls.author = User.objects.create(username='Автор заметки')
-        cls.note = Note.objects.create(
+        cls.notes = Note.objects.create(
             title='Заголовок',
             slug='s',
             author=cls.author,
@@ -67,25 +68,25 @@ class TestNoteEditDelete(TestCase):
         cls.reader = User.objects.create(username='Читатель')
         cls.reader_client = Client()
         cls.reader_client.force_login(cls.reader)
-        cls.edit_url = reverse('notes:edit', args=(cls.note.slug,))
-        cls.delete_url = reverse('notes:delete', args=(cls.note.slug,))
+        cls.edit_url = reverse('notes:edit', args=(cls.notes.slug,))
+        cls.delete_url = reverse('notes:delete', args=(cls.notes.slug,))
         cls.form_data = {'text': 'Обновлённая заметка',
                          'title': 'Обновлённый заголовок заметки',
                          'slug': 'ns'}
 
     def test_not_unique_slug(self):
-        self.form_data['slug'] = self.note.slug
+        self.form_data['slug'] = self.notes.slug
         response = self.author_client.post(reverse('notes:add'),
                                            data=self.form_data)
         self.assertFormError(response, 'form', 'slug',
-                             errors=(self.note.slug + WARNING))
+                             errors=(self.notes.slug + WARNING))
         self.assertEqual(Note.objects.count(), self.notes_counts + 1)
 
     def test_author_availability_edit_note(self):
         response = self.author_client.post(self.edit_url, data=self.form_data)
-        self.note.refresh_from_db()
+        self.notes.refresh_from_db()
         self.assertRedirects(response, reverse('notes:success'))
-        self.assertEqual(self.note.text, 'Обновлённая заметка')
+        self.assertEqual(self.notes.text, 'Обновлённая заметка')
 
     def test_author_availability_delete_note(self):
         response = self.author_client.delete(self.delete_url)
@@ -95,9 +96,9 @@ class TestNoteEditDelete(TestCase):
 
     def test_another_user_no_availability_edit_note_of_another_user(self):
         response = self.reader_client.post(self.edit_url, data=self.form_data)
-        self.note.refresh_from_db()
+        self.notes.refresh_from_db()
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-        self.assertEqual(self.note.text, 'Текст заметки')
+        self.assertEqual(self.notes.text, 'Текст заметки')
 
     def test_another_user_no_availability_delete_note_of_another_user(self):
         response = self.reader_client.delete(self.delete_url)
