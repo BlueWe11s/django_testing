@@ -42,6 +42,7 @@ class TestContent(TestCase):
             (reverse('notes:edit', args=(self.notes.slug,)))
         )
         for url in urls:
-            response = self.author_client.get(url)
-            self.assertIn('form', response.context)
-            self.assertIsInstance(response.context['form'], NoteForm)
+            with self.subTest(name=url):
+                response = self.author_client.get(url)
+                self.assertIn('form', response.context)
+                self.assertIsInstance(response.context['form'], NoteForm)

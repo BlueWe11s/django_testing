@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -94,11 +96,11 @@ class TestNoteEditDelete(TestCase):
     def test_another_user_no_availability_edit_note_of_another_user(self):
         response = self.reader_client.post(self.edit_url, data=self.form_data)
         self.note.refresh_from_db()
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(self.note.text, 'Текст заметки')
 
     def test_another_user_no_availability_delete_note_of_another_user(self):
         response = self.reader_client.delete(self.delete_url)
         notes_count = Note.objects.count()
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(notes_count, self.notes_counts + 1)
