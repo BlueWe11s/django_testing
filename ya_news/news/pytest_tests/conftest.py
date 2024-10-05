@@ -17,6 +17,7 @@ NEWS_HOME = 'news:home'
 TITLE = 'Заголовок'
 TEXT = 'Текст'
 NEW_TEXT = 'Новый текст'
+NEW_COMMENT = {'text': NEW_TEXT}
 
 
 @pytest.fixture(autouse=True)
@@ -92,11 +93,6 @@ def multiply_comments(author, new):
         )
         comment.created = timezone.now() + timedelta(days=index)
         comment.save()
-
-
-@pytest.fixture
-def new_comment():
-    return {'text': NEW_TEXT}
 
 
 @pytest.fixture

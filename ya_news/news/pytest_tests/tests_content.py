@@ -5,17 +5,15 @@ from django.urls import reverse
 from .conftest import AUTHOR_CLIENT, CLIENT, NEWS_DETAIL, NEWS_HOME
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('more_news')
 def test_news_count(client):
     url = reverse(NEWS_HOME)
     response = client.get(url)
     object_list = response.context['object_list']
-    news_count = len(object_list)
+    news_count = object_list.objects.count()
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('more_news')
 def test_news_order(client):
     url = reverse(NEWS_HOME)
@@ -26,7 +24,6 @@ def test_news_order(client):
     assert sorted_dates == all_dates
 
 
-@pytest.mark.django_db
 @pytest.mark.usefixtures('more_comment')
 def test_comments_order(client, news):
     url = reverse(NEWS_DETAIL, args=(news.id,))
@@ -38,7 +35,6 @@ def test_comments_order(client, news):
     assert sorted_dates == all_dates
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
     'parametrized_client, note_in_list',
     (
