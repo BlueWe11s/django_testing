@@ -11,7 +11,6 @@ User = get_user_model()
 class TestRoutes(GranTest):
 
     def test_availability_pages(self):
-        self.url_succes = reverse('notes:succes')
         urls = (
             [self.url_home, self.anonimous, HTTPStatus.OK]
             [self.url_login, self.anonimous, HTTPStatus.OK]

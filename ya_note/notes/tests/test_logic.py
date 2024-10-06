@@ -1,7 +1,6 @@
 from http import HTTPStatus
 
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from pytils.translit import slugify
 
 from notes.forms import WARNING
@@ -14,7 +13,6 @@ User = get_user_model()
 class TestNoteCreation(GranTest):
 
     def test_user_availability_create_note(self):
-        self.url_succes = reverse('notes:success')
         response = self.reader_client.post(self.url_add,
                                            data=self.form_data)
         note_count = Note.objects.count()
@@ -27,12 +25,11 @@ class TestNoteCreation(GranTest):
         self.assertEqual(note.author, self.reader)
 
     def test_anonymous_user_no_availability_create_note(self):
-        self.client.post(reverse('notes:add'), data=self.form_data)
+        self.client.post(self.url_add, data=self.form_data)
         notes_count = Note.objects.count()
         self.assertEqual(notes_count, self.notes_counts)
 
     def test_no_slug(self):
-        self.url_succes = reverse('notes:success')
         self.form_data.pop('slug')
         response = self.reader_client.post(self.url_add,
                                            data=self.form_data)
@@ -54,14 +51,12 @@ class TestNoteEditDelete(GranTest):
         self.assertEqual(Note.objects.count(), 1)
 
     def test_author_availability_edit_note(self):
-        self.url_succes = reverse('notes:success')
         response = self.author_client.post(self.url_edit, data=self.form_data)
         self.notes.refresh_from_db()
         self.assertRedirects(response, self.url_succes)
         self.assertEqual(self.notes.text, self.form_data['text'])
 
     def test_author_availability_delete_note(self):
-        self.url_succes = reverse('notes:success')
         response = self.author_client.post(self.url_add,
                                            data=self.form_data)
         response = self.author_client.delete(self.url_delete)

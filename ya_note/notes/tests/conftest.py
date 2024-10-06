@@ -37,3 +37,4 @@ class GranTest(TestCase):
         cls.url_sign_up = reverse('users:signup')
         cls.url_detail = reverse('notes:detail', args=(cls.notes.slug,))
         cls.url_delete = reverse('notes:delete', args=(cls.notes.slug,))
+        cls.url_succes = reverse('notes:success')
