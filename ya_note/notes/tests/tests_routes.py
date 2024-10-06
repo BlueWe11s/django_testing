@@ -1,11 +1,8 @@
 from http import HTTPStatus
 
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from .conftest import GranTest
-
-User = get_user_model()
 
 
 class TestRoutes(GranTest):
