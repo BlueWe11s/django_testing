@@ -54,7 +54,7 @@ def reader_client(reader, client):
 
 
 @pytest.fixture
-def new(author):
+def new():
     news = News.objects.create(
         title=TITLE,
         text=TEXT,
@@ -63,7 +63,7 @@ def new(author):
 
 
 @pytest.fixture
-def bulk_news_creation(author):
+def bulk_news_creation():
     return News.objects.bulk_create(
         News(
             title=f'{TITLE} {index}',

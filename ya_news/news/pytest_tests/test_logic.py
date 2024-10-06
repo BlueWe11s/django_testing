@@ -47,7 +47,6 @@ def test_author_can_delete_comment(
     author_client,
     delete_comment_url,
     detail_url,
-    comment
 ):
     comments_count = Comment.objects.count()
     response = author_client.delete(delete_comment_url)
@@ -58,7 +57,6 @@ def test_author_can_delete_comment(
 def test_user_cant_delete_another_comment(
     reader_client,
     delete_comment_url,
-    comment
 ):
     comments_count = Comment.objects.count()
     response = reader_client.delete(delete_comment_url)
