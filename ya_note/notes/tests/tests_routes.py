@@ -2,10 +2,10 @@ from http import HTTPStatus
 
 from django.urls import reverse
 
-from .conftest import GranTest
+from .base import BaseTest
 
 
-class TestRoutes(GranTest):
+class TestRoutes(BaseTest):
 
     def test_availability_pages(self):
         urls = (

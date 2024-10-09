@@ -1,4 +1,5 @@
 from http import HTTPStatus
+import pytest
 
 from pytest_django.asserts import assertFormError, assertRedirects
 
@@ -30,9 +31,10 @@ def test_anonymous_cant_create_comment(client, detail_url):
     assert Comment.objects.count() == comments_count
 
 
-def test_user_cant_use_bad_words(author_client, detail_url):
+@pytest.mark.parametrize('bad_word', BAD_WORDS)
+def test_user_cant_use_bad_words(author_client, detail_url, bad_word):
     comments_count = Comment.objects.count()
-    bad_words_data = {'text': f'{TEXT}, {BAD_WORDS[0]}, {TEXT}'}
+    bad_words_data = {'text': f'{TEXT}, {bad_word}, {TEXT}'}
     response = author_client.post(detail_url, data=bad_words_data)
     assertFormError(
         response,

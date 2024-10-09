@@ -10,8 +10,7 @@ def test_news_count(client):
     url = reverse(NEWS_HOME)
     response = client.get(url)
     object_list = response.context['object_list']
-    news_count = object_list.objects.count()
-    assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
+    assert object_list.objects.count() == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
 @pytest.mark.usefixtures('more_news')

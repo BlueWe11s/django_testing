@@ -5,12 +5,12 @@ from pytils.translit import slugify
 
 from notes.forms import WARNING
 from notes.models import Note
-from .conftest import GranTest
+from .base import BaseTest
 
 User = get_user_model()
 
 
-class TestNoteCreation(GranTest):
+class TestNoteCreation(BaseTest):
 
     def test_user_availability_create_note(self):
         response = self.reader_client.post(self.url_add,
@@ -40,7 +40,7 @@ class TestNoteCreation(GranTest):
         self.assertEqual(new_note.slug, expected_slug)
 
 
-class TestNoteEditDelete(GranTest):
+class TestNoteEditDelete(BaseTest):
 
     def test_not_unique_slug(self):
         self.form_data['slug'] = self.notes.slug
@@ -68,7 +68,7 @@ class TestNoteEditDelete(GranTest):
         response = self.reader_client.post(self.url_edit, data=self.form_data)
         self.notes.refresh_from_db()
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-        self.assertEqual(self.notes.text, 'Текст')
+        self.assertNotEqual(self.notes.text, self.form_data['text'])
 
     def test_another_user_no_availability_delete_note_of_another_user(self):
         response = self.reader_client.delete(self.url_delete)

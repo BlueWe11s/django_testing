@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 
 from notes.forms import NoteForm
-from .conftest import GranTest
+from .base import BaseTest
 
 User = get_user_model()
 
 
-class TestContent(GranTest):
+class TestContent(BaseTest):
 
     def test_notes_list(self):
         response = self.author_client.get(self.url_list)
