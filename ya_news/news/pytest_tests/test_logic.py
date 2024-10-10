@@ -49,21 +49,21 @@ def test_author_can_delete_comment(
     author_client,
     delete_comment_url,
     detail_url,
+    comment
 ):
-    comments_count = Comment.objects.count()
     response = author_client.delete(delete_comment_url)
     assertRedirects(response, f'{detail_url}#comments')
-    assert Comment.objects.count() == comments_count - 1
+    assert not Comment.objects.filter(pk=comment.id).exists()
 
 
 def test_user_cant_delete_another_comment(
     reader_client,
     delete_comment_url,
+    comment
 ):
-    comments_count = Comment.objects.count()
     response = reader_client.delete(delete_comment_url)
     assert response.status_code == HTTPStatus.NOT_FOUND
-    assert Comment.objects.count() == comments_count
+    assert Comment.objects.filter(pk=comment.id).exists()
 
 
 def test_author_can_edit_comment(
